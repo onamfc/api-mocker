@@ -49,7 +49,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/onamfc/api-mocker.git"
+    "url": "git+https://github.com/onamfc/api-mocker.git"
   },
   "bugs": {
     "url": "https://github.com/onamfc/api-mocker/issues"
