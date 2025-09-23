@@ -1,0 +1,61 @@
+{
+  "name": "@onamfc/api-mocker",
+  "version": "1.0.0",
+  "description": "A lightweight TypeScript library for mocking API endpoints during frontend development",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.esm.js"
+    }
+  },
+  "browser": "./dist/index.esm.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "rollup -c rollup.config.mjs",
+    "dev": "rollup -c -w",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mock",
+    "api",
+    "endpoints",
+    "frontend",
+    "development",
+    "typescript"
+  ],
+  "author": "onamfc",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.0",
+    "jest": "^29.7.0",
+    "rollup": "^4.5.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2",
+    "tslib": "^2.6.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/onamfc/api-mocker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/onamfc/api-mocker/issues"
+  },
+  "homepage": "https://github.com/onamfc/api-mocker#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}
