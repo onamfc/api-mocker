@@ -1,6 +1,6 @@
 {
   "name": "@onamfc/api-mocker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A lightweight TypeScript library for mocking API endpoints during frontend development",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
