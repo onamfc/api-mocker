@@ -1,4 +1,4 @@
-# @onamfc/api-mocker
+# API Mocker
 
 A lightweight TypeScript library for mocking API endpoints during frontend development. Perfect for developing frontend applications before the backend is ready, or for testing different API scenarios.
 
