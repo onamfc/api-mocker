@@ -1,5 +1,4 @@
 # API Mocker
-
 A lightweight TypeScript library for mocking API endpoints during frontend development. Perfect for developing frontend applications before the backend is ready, or for testing different API scenarios.
 
 ## Features
@@ -98,20 +97,46 @@ export function setupMocks() {
 
 **For React Applications:**
 
-Create `src/mocks/index.js`:
+> 💡 **Environment variable tips:** Create React App (and other Webpack-based builds) exposes values through `process.env`, while Vite exposes them via `import.meta.env`. Use the snippet that matches your toolchain so the browser build never tries to access an undefined `process` object.
+
+Create `src/mocks/index.js` (Create React App / Webpack):
 
 ```typescript
 import { setupMocks, apiMocker } from './api-mocks';
 
+const env = typeof process !== 'undefined' && process?.env ? process.env : {};
+
 // Only enable mocks in development
-const isDevelopment = process.env.NODE_ENV === 'development';
-const useMocks = process.env.REACT_APP_USE_MOCKS === 'true' || isDevelopment;
+const isDevelopment = env.NODE_ENV === 'development';
+const useMocks = env.REACT_APP_USE_MOCKS === 'true' || isDevelopment;
 
 if (useMocks) {
-  console.log('API Mocking enabled');
+  console.log('🎭 API Mocking enabled');
   setupMocks();
 } else {
-  console.log('Using real API');
+  console.log('🌐 Using real API');
+  apiMocker.disable();
+}
+
+export { apiMocker };
+```
+
+Or for Vite-powered React projects:
+
+```typescript
+import { setupMocks, apiMocker } from './api-mocks';
+
+const env = import.meta.env;
+
+// Only enable mocks in development
+const isDevelopment = env.MODE === 'development' || env.DEV;
+const useMocks = env.VITE_USE_MOCKS === 'true' || isDevelopment;
+
+if (useMocks) {
+  console.log('🎭 API Mocking enabled');
+  setupMocks();
+} else {
+  console.log('🌐 Using real API');
   apiMocker.disable();
 }
 
@@ -144,10 +169,10 @@ export function initializeMocks() {
   const useMocks = import.meta.env.VITE_USE_MOCKS === 'true' || isDevelopment;
 
   if (useMocks) {
-    console.log('API Mocking enabled');
+    console.log('🎭 API Mocking enabled');
     setupMocks();
   } else {
-    console.log('Using real API');
+    console.log('🌐 Using real API');
     apiMocker.disable();
   }
 }
@@ -519,41 +544,83 @@ VITE_API_URL=https://api.yourapp.com
 ### Conditional Mock Setup
 
 ```typescript
-// src/mocks/index.js
+// src/mocks/index.js (Create React App / Webpack)
 import { setupMocks, setupStatefulMocks, apiMocker } from './api-mocks';
+
+const env = typeof process !== 'undefined' && process?.env ? process.env : {};
 
 const config = {
   // Enable mocks in development or when explicitly requested
-  enabled: process.env.NODE_ENV === 'development' || 
-           process.env.REACT_APP_USE_MOCKS === 'true',
-  
+  enabled: env.NODE_ENV === 'development' || env.REACT_APP_USE_MOCKS === 'true',
+
   // Use stateful mocks for more realistic testing
-  stateful: process.env.REACT_APP_STATEFUL_MOCKS === 'true',
-  
+  stateful: env.REACT_APP_STATEFUL_MOCKS === 'true',
+
   // Add delays to simulate real network conditions
-  realistic: process.env.REACT_APP_REALISTIC_DELAYS === 'true'
+  realistic: env.REACT_APP_REALISTIC_DELAYS === 'true'
 };
 
 if (config.enabled) {
-  console.log('Initializing API mocks...');
-  
+  console.log('🎭 Initializing API mocks...');
+
   // Configure the mocker
   apiMocker.updateConfig({
-    baseUrl: process.env.REACT_APP_API_URL,
+    baseUrl: env.REACT_APP_API_URL,
     logRequests: true,
     globalDelay: config.realistic ? 500 : 0
   });
-  
+
   // Setup mocks
   if (config.stateful) {
     setupStatefulMocks();
   } else {
     setupMocks();
   }
-  
-  console.log('API mocks ready');
+
+  console.log('✅ API mocks ready');
 } else {
-  console.log('Using real API endpoints');
+  console.log('🌐 Using real API endpoints');
+  apiMocker.disable();
+}
+```
+
+```typescript
+// src/mocks/index.js (Vite)
+import { setupMocks, setupStatefulMocks, apiMocker } from './api-mocks';
+
+const env = import.meta.env;
+
+const config = {
+  // Enable mocks in development or when explicitly requested
+  enabled: env.DEV || env.MODE === 'development' || env.VITE_USE_MOCKS === 'true',
+
+  // Use stateful mocks for more realistic testing
+  stateful: env.VITE_STATEFUL_MOCKS === 'true',
+
+  // Add delays to simulate real network conditions
+  realistic: env.VITE_REALISTIC_DELAYS === 'true'
+};
+
+if (config.enabled) {
+  console.log('🎭 Initializing API mocks...');
+
+  // Configure the mocker
+  apiMocker.updateConfig({
+    baseUrl: env.VITE_API_URL,
+    logRequests: true,
+    globalDelay: config.realistic ? 500 : 0
+  });
+
+  // Setup mocks
+  if (config.stateful) {
+    setupStatefulMocks();
+  } else {
+    setupMocks();
+  }
+
+  console.log('✅ API mocks ready');
+} else {
+  console.log('🌐 Using real API endpoints');
   apiMocker.disable();
 }
 ```
@@ -583,11 +650,36 @@ apiMocker.remove('POST', '/users');
 ### 3. Environment-based Control
 
 ```typescript
-// Use environment variables to control which endpoints are mocked
+// Use environment variables to control which endpoints are mocked (CRA / Webpack)
+const env = typeof process !== 'undefined' && process?.env ? process.env : {};
+
 const mockConfig = {
-  users: process.env.REACT_APP_MOCK_USERS !== 'false',
-  products: process.env.REACT_APP_MOCK_PRODUCTS !== 'false',
-  orders: process.env.REACT_APP_MOCK_ORDERS !== 'false'
+  users: env.REACT_APP_MOCK_USERS !== 'false',
+  products: env.REACT_APP_MOCK_PRODUCTS !== 'false',
+  orders: env.REACT_APP_MOCK_ORDERS !== 'false'
+};
+
+if (mockConfig.users) {
+  setupUserMocks();
+}
+
+if (mockConfig.products) {
+  setupProductMocks();
+}
+
+if (mockConfig.orders) {
+  setupOrderMocks();
+}
+```
+
+```typescript
+// Use environment variables to control which endpoints are mocked (Vite)
+const env = import.meta.env;
+
+const mockConfig = {
+  users: env.VITE_MOCK_USERS !== 'false',
+  products: env.VITE_MOCK_PRODUCTS !== 'false',
+  orders: env.VITE_MOCK_ORDERS !== 'false'
 };
 
 if (mockConfig.users) {
