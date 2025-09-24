@@ -33,7 +33,7 @@ npm install @onamfc/api-mocker
 
 Create a dedicated file for your API mocks. This keeps your mock configuration organized and separate from your main application code.
 
-**Create `src/mocks/api-mocks.js` (or `.ts` for TypeScript):**
+**Create `src/mocks/api-mocks.ts`**
 
 ```typescript
 import { createMocker } from '@onamfc/api-mocker';
@@ -99,8 +99,11 @@ export function setupMocks() {
 
 > 💡 **Environment variable tips:** Create React App (and other Webpack-based builds) exposes values through `process.env`, while Vite exposes them via `import.meta.env`. Use the snippet that matches your toolchain so the browser build never tries to access an undefined `process` object.
 
-Create `src/mocks/index.js` (Create React App / Webpack):
 
+
+**Create `src/mocks/index.ts`**
+
+ For Create React App / Webpack projects:
 ```typescript
 import { setupMocks, apiMocker } from './api-mocks';
 
@@ -111,10 +114,10 @@ const isDevelopment = env.NODE_ENV === 'development';
 const useMocks = env.REACT_APP_USE_MOCKS === 'true' || isDevelopment;
 
 if (useMocks) {
-  console.log('🎭 API Mocking enabled');
+  console.log('API Mocking enabled');
   setupMocks();
 } else {
-  console.log('🌐 Using real API');
+  console.log('Using real API');
   apiMocker.disable();
 }
 
@@ -133,10 +136,10 @@ const isDevelopment = env.MODE === 'development' || env.DEV;
 const useMocks = env.VITE_USE_MOCKS === 'true' || isDevelopment;
 
 if (useMocks) {
-  console.log('🎭 API Mocking enabled');
+  console.log('API Mocking enabled');
   setupMocks();
 } else {
-  console.log('🌐 Using real API');
+  console.log('Using real API');
   apiMocker.disable();
 }
 
@@ -159,7 +162,7 @@ root.render(<App />);
 
 **For Vue Applications:**
 
-Create `src/mocks/index.js`:
+Create `src/mocks/index.ts`:
 
 ```typescript
 import { setupMocks, apiMocker } from './api-mocks';
@@ -169,10 +172,10 @@ export function initializeMocks() {
   const useMocks = import.meta.env.VITE_USE_MOCKS === 'true' || isDevelopment;
 
   if (useMocks) {
-    console.log('🎭 API Mocking enabled');
+    console.log('API Mocking enabled');
     setupMocks();
   } else {
-    console.log('🌐 Using real API');
+    console.log('Using real API');
     apiMocker.disable();
   }
 }
@@ -283,7 +286,7 @@ apiMocker.mockDynamic({
 
 ### 2. Stateful CRUD Operations
 
-Create `src/mocks/stateful-mocks.js`:
+Create `src/mocks/stateful-mocks.ts`:
 
 ```typescript
 import { apiMocker } from './api-mocks';
@@ -471,22 +474,22 @@ Here's a recommended file structure for organizing your mocks:
 ```
 src/
 ├── mocks/
-│   ├── index.js              # Main mock initialization
-│   ├── api-mocks.js          # Basic mock definitions
-│   ├── stateful-mocks.js     # Stateful CRUD operations
-│   ├── error-mocks.js        # Error scenarios
+│   ├── index.ts              # Main mock initialization
+│   ├── api-mocks.ts          # Basic mock definitions
+│   ├── stateful-mocks.ts     # Stateful CRUD operations
+│   ├── error-mocks.ts        # Error scenarios
 │   └── data/
-│       ├── users.js          # Mock user data
-│       ├── products.js       # Mock product data
-│       └── orders.js         # Mock order data
+│       ├── users.ts          # Mock user data
+│       ├── products.ts       # Mock product data
+│       └── orders.ts         # Mock order data
 ├── services/
-│   ├── api.js                # Your API service functions
-│   └── userService.js        # User-specific API calls
+│   ├── api.ts                # Your API service functions
+│   └── userService.ts        # User-specific API calls
 └── components/
     └── ...
 ```
 
-**Example `src/mocks/data/users.js`:**
+**Example `src/mocks/data/users.ts`:**
 
 ```typescript
 export const mockUsers = [
@@ -544,7 +547,7 @@ VITE_API_URL=https://api.yourapp.com
 ### Conditional Mock Setup
 
 ```typescript
-// src/mocks/index.js (Create React App / Webpack)
+// src/mocks/index.ts (Create React App / Webpack)
 import { setupMocks, setupStatefulMocks, apiMocker } from './api-mocks';
 
 const env = typeof process !== 'undefined' && process?.env ? process.env : {};
@@ -561,7 +564,7 @@ const config = {
 };
 
 if (config.enabled) {
-  console.log('🎭 Initializing API mocks...');
+  console.log('Initializing API mocks...');
 
   // Configure the mocker
   apiMocker.updateConfig({
@@ -577,15 +580,15 @@ if (config.enabled) {
     setupMocks();
   }
 
-  console.log('✅ API mocks ready');
+  console.log('API mocks ready');
 } else {
-  console.log('🌐 Using real API endpoints');
+  console.log('Using real API endpoints');
   apiMocker.disable();
 }
 ```
 
 ```typescript
-// src/mocks/index.js (Vite)
+// src/mocks/index.ts (Vite)
 import { setupMocks, setupStatefulMocks, apiMocker } from './api-mocks';
 
 const env = import.meta.env;
@@ -602,7 +605,7 @@ const config = {
 };
 
 if (config.enabled) {
-  console.log('🎭 Initializing API mocks...');
+  console.log('Initializing API mocks...');
 
   // Configure the mocker
   apiMocker.updateConfig({
@@ -618,9 +621,9 @@ if (config.enabled) {
     setupMocks();
   }
 
-  console.log('✅ API mocks ready');
+  console.log('API mocks ready');
 } else {
-  console.log('🌐 Using real API endpoints');
+  console.log('Using real API endpoints');
   apiMocker.disable();
 }
 ```
